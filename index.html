@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no">
+  <title>Paradigma — Seu próximo passo no código</title>
+
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    img { -ms-interpolation-mode:bicubic; border:0; display:block; outline:none; text-decoration:none; }
+    body { margin:0!important; padding:0!important; width:100%!important; background-color:#0f0f12; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    a[x-apple-data-detectors] { color:inherit!important; text-decoration:none!important; }
+
+    /* ── Quiz styles ── */
+    #quiz-section { display:none; background:#0f0f12; }
+    #quiz-section.active { display:block; }
+
+    .quiz-wrap { max-width:600px; margin:0 auto; padding:0 0 60px; }
+
+    .q-card {
+      display:none;
+      background:#16161f;
+      border:1px solid #2a2a38;
+      border-radius:16px;
+      padding:36px 40px 32px;
+      margin:0 40px;
+      animation: fadeUp .35s ease forwards;
+    }
+    .q-card.active { display:block; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(12px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .q-progress-bar { height:3px; background:#2a2a38; border-radius:2px; margin:0 40px 32px; overflow:hidden; }
+    .q-progress-fill { height:3px; background:#8B7FE8; border-radius:2px; transition:width .5s ease; }
+
+    .q-eyebrow { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#8B7FE8; margin:0 0 10px; }
+    .q-title { font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:700; color:#fff; line-height:1.3; margin:0 0 28px; }
+
+    .q-options { display:flex; flex-direction:column; gap:10px; }
+    .q-opt {
+      display:flex; align-items:center; gap:14px;
+      background:#0f0f12; border:1.5px solid #2a2a38; border-radius:10px;
+      padding:14px 18px; cursor:pointer;
+      transition:border-color .18s, background .18s;
+      font-size:14px; color:#9898aa; line-height:1.4;
+    }
+    .q-opt:hover { border-color:#8B7FE8; color:#fff; background:#1a1a28; }
+    .q-opt.selected { border-color:#8B7FE8; background:#1e1a38; color:#fff; }
+    .q-opt .opt-key {
+      min-width:28px; height:28px; border-radius:6px;
+      background:#2a2a38; color:#8B7FE8;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:700; letter-spacing:0.5px;
+      transition:background .18s, color .18s;
+    }
+    .q-opt.selected .opt-key { background:#8B7FE8; color:#fff; }
+
+    .q-nav { display:flex; align-items:center; justify-content:space-between; margin-top:24px; }
+    .q-btn-next {
+      padding:12px 28px; background:#8B7FE8; color:#fff;
+      border:none; border-radius:8px; font-size:14px; font-weight:600;
+      cursor:pointer; transition:background .18s; opacity:.4; pointer-events:none;
+    }
+    .q-btn-next.ready { opacity:1; pointer-events:auto; }
+    .q-btn-next.ready:hover { background:#7C6FCD; }
+    .q-btn-back {
+      padding:12px 20px; background:transparent; color:#5a5a6a;
+      border:none; font-size:13px; cursor:pointer; transition:color .18s;
+    }
+    .q-btn-back:hover { color:#9898aa; }
+    .q-step-label { font-size:12px; color:#5a5a6a; }
+
+    /* ── Result ── */
+    #quiz-result { display:none; padding:0 40px 0; }
+    #quiz-result.show { display:block; animation:fadeUp .4s ease forwards; }
+
+    .result-hero {
+      background:linear-gradient(135deg,#1e1a38 0%,#16161f 100%);
+      border:1px solid #3a3060; border-radius:16px;
+      padding:40px 36px; text-align:center; margin-bottom:20px;
+    }
+    .result-badge {
+      display:inline-block; background:#8B7FE8; color:#fff;
+      font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      padding:5px 14px; border-radius:20px; margin-bottom:20px;
+    }
+    .result-title { font-family:Georgia,'Times New Roman',serif; font-size:30px; font-weight:700; color:#fff; margin:0 0 10px; }
+    .result-sub { font-size:14px; color:#9898aa; line-height:1.6; margin:0 0 28px; max-width:380px; margin-left:auto; margin-right:auto; margin-bottom:28px; }
+
+    .result-bars { margin-bottom:28px; text-align:left; }
+    .bar-row { margin-bottom:14px; }
+    .bar-label { display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px; }
+    .bar-name { color:#9898aa; }
+    .bar-pct { font-weight:600; }
+    .bar-bg { background:#2a2a38; border-radius:4px; height:7px; overflow:hidden; }
+    .bar-fill { height:7px; border-radius:4px; transition:width 1s ease; }
+
+    .result-langs { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:28px; }
+    .lang-pill { font-size:13px; font-family:'Courier New',monospace; padding:5px 14px; border-radius:20px; }
+
+    .result-cta {
+      display:inline-block; padding:15px 36px;
+      background:#8B7FE8; color:#fff; border-radius:8px;
+      font-size:15px; font-weight:600; cursor:pointer;
+      border:none; transition:background .18s;
+    }
+    .result-cta:hover { background:#7C6FCD; }
+
+    .result-traits { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px; }
+    .trait-tag { font-size:12px; padding:4px 12px; border-radius:20px; background:#1e1a38; color:#8B7FE8; border:1px solid #3a3060; }
+
+    /* ── Responsive ── */
+    @media screen and (max-width:600px) {
+      .email-container { width:100%!important; }
+      .stack-column,.stack-column-center { display:block!important; width:100%!important; direction:ltr!important; }
+      .stack-column-center { text-align:center!important; }
+      .hide-on-mobile { display:none!important; }
+      .hero-title { font-size:30px!important; line-height:1.1!important; }
+      .hero-sub { font-size:15px!important; }
+      .section-pad { padding:28px 20px!important; }
+      .card-pad { padding:20px 16px!important; }
+      .stat-number { font-size:34px!important; }
+      .q-card { margin:0 16px!important; padding:28px 20px 24px!important; }
+      .q-progress-bar { margin:0 16px 24px!important; }
+      #quiz-result { padding:0 16px!important; }
+      .result-hero { padding:28px 20px!important; }
+      .q-title { font-size:18px!important; }
+    }
+  </style>
+</head>
+
+<body>
+<!-- Preview text -->
+<div style="display:none;font-size:1px;color:#0f0f12;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+  Descubra qual paradigma combina com seu estilo de pensar — faça o quiz e receba seu perfil completo. ‌‌‌‌‌
+</div>
+
+<!-- ═══════════════════════════════════════════
+     E-MAIL
+     ═══════════════════════════════════════════ -->
+<div id="email-section">
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#0f0f12;">
+<tr><td>
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center" class="email-container" style="margin:auto;">
+
+  <!-- HEADER -->
+  <tr>
+    <td style="padding:24px 40px 0; background-color:#0f0f12;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td style="vertical-align:middle;">
+            <span style="font-family:Georgia,'Times New Roman',serif; font-size:20px; font-weight:700; letter-spacing:-0.5px; color:#ffffff;">
+              paradigma<span style="color:#8B7FE8;">.</span>
+            </span>
+          </td>
+          <td align="right" style="vertical-align:middle;">
+            <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a; letter-spacing:0.5px; text-transform:uppercase;">
+              Newsletter &nbsp;#12
+            </span>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- HERO -->
+  <tr>
+    <td style="padding:0 40px; background-color:#0f0f12;" class="section-pad">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td style="padding:48px 0 16px;">
+            <p style="margin:0 0 20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#8B7FE8;">
+              Edição de junho
+            </p>
+            <h1 class="hero-title" style="margin:0 0 20px; font-family:Georgia,'Times New Roman',serif; font-size:44px; font-weight:700; line-height:1.08; letter-spacing:-1px; color:#ffffff;">
+              Código que parece<br>
+              <span style="color:#8B7FE8;">natural</span> para você
+            </h1>
+            <p class="hero-sub" style="margin:0 0 32px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:17px; line-height:1.6; color:#9898aa;">
+              A maioria dos tutoriais ensina <em>como</em> programar. Esta edição fala sobre <em>por que</em> alguns paradigmas clicam imediatamente — e outros nunca clicam.
+            </p>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td style="border-radius:8px; background:#8B7FE8;">
+                  <a href="#quiz-anchor" onclick="startQuiz()" style="display:inline-block; padding:14px 28px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; color:#ffffff; letter-spacing:0.3px; border-radius:8px; background:#8B7FE8; text-decoration:none;">
+                    Descobrir meu paradigma →
+                  </a>
+                </td>
+                <td style="width:16px;">&nbsp;</td>
+                <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; color:#5a5a6a; vertical-align:middle;">
+                  Leitura de 4 min
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Accent line -->
+  <tr>
+    <td style="padding:0 40px; background-color:#0f0f12;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td style="height:1px; background:linear-gradient(to right,#8B7FE8 0%,#2a2a38 60%);">&nbsp;</td></tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- STATS BAR -->
+  <tr>
+    <td style="padding:0 40px; background-color:#16161f;" class="section-pad">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td class="stack-column-center" width="33%" style="padding:28px 0; text-align:center; vertical-align:top; border-right:1px solid #2a2a38;">
+            <p class="stat-number" style="margin:0 0 4px; font-family:Georgia,'Times New Roman',serif; font-size:42px; font-weight:700; color:#8B7FE8; line-height:1;">4</p>
+            <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a; text-transform:uppercase; letter-spacing:1px;">paradigmas</p>
+          </td>
+          <td class="stack-column-center" width="33%" style="padding:28px 0; text-align:center; vertical-align:top; border-right:1px solid #2a2a38;">
+            <p class="stat-number" style="margin:0 0 4px; font-family:Georgia,'Times New Roman',serif; font-size:42px; font-weight:700; color:#ffffff; line-height:1;">12k</p>
+            <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a; text-transform:uppercase; letter-spacing:1px;">leitores</p>
+          </td>
+          <td class="stack-column-center" width="33%" style="padding:28px 0; text-align:center; vertical-align:top;">
+            <p class="stat-number" style="margin:0 0 4px; font-family:Georgia,'Times New Roman',serif; font-size:42px; font-weight:700; color:#4ecb8d; line-height:1;">93%</p>
+            <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a; text-transform:uppercase; letter-spacing:1px;">satisfação</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- FEATURE CARDS 2×2 -->
+  <tr>
+    <td style="padding:40px 40px 0; background-color:#0f0f12;" class="section-pad">
+      <p style="margin:0 0 24px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5a5a6a;">Os 4 paradigmas explicados</p>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td class="stack-column" width="48%" valign="top" style="padding:0 12px 16px 0;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #2a2a38; border-radius:12px;">
+              <tr><td class="card-pad" style="padding:24px; background-color:#16161f; border-radius:12px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                  <td width="48" height="48" style="width:48px;height:48px;background:#1e1a38;border-radius:10px;text-align:center;vertical-align:middle;">
+                    <span style="font-size:22px;line-height:48px;display:block;">🎯</span>
+                  </td>
+                </tr></table>
+                <p style="margin:16px 0 6px; font-family:Georgia,'Times New Roman',serif; font-size:17px; font-weight:700; color:#ffffff;">Declarativo</p>
+                <p style="margin:0 0 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; line-height:1.6; color:#7a7a8a;">Você diz <em>o quê</em> quer. SQL, HTML, CSS. Código que se lê como uma intenção.</p>
+                <p style="margin:0;"><span style="font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:700; color:#8B7FE8;">95%</span> <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a; margin-left:4px; text-transform:uppercase; letter-spacing:0.5px;">match médio</span></p>
+              </td></tr>
+            </table>
+          </td>
+          <td class="stack-column" width="48%" valign="top" style="padding:0 0 16px 12px;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #2a2a38; border-radius:12px;">
+              <tr><td class="card-pad" style="padding:24px; background-color:#16161f; border-radius:12px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                  <td width="48" height="48" style="width:48px;height:48px;background:#1a2b1e;border-radius:10px;text-align:center;vertical-align:middle;">
+                    <span style="font-size:22px;line-height:48px;display:block;">🧩</span>
+                  </td>
+                </tr></table>
+                <p style="margin:16px 0 6px; font-family:Georgia,'Times New Roman',serif; font-size:17px; font-weight:700; color:#ffffff;">Orientado a objetos</p>
+                <p style="margin:0 0 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; line-height:1.6; color:#7a7a8a;">Modela o mundo com entidades. Reutiliza, herda, encapsula. Python, Java, Kotlin.</p>
+                <p style="margin:0;"><span style="font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:700; color:#4ecb8d;">88%</span> <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a; margin-left:4px; text-transform:uppercase; letter-spacing:0.5px;">match médio</span></p>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="stack-column" width="48%" valign="top" style="padding:0 12px 0 0;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #2a2a38; border-radius:12px;">
+              <tr><td class="card-pad" style="padding:24px; background-color:#16161f; border-radius:12px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                  <td width="48" height="48" style="width:48px;height:48px;background:#1f1c10;border-radius:10px;text-align:center;vertical-align:middle;">
+                    <span style="font-size:22px;line-height:48px;display:block;">🔄</span>
+                  </td>
+                </tr></table>
+                <p style="margin:16px 0 6px; font-family:Georgia,'Times New Roman',serif; font-size:17px; font-weight:700; color:#ffffff;">Funcional</p>
+                <p style="margin:0 0 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; line-height:1.6; color:#7a7a8a;">Funções puras, sem efeitos colaterais. Dados fluindo por transformações. Elixir, Haskell.</p>
+                <p style="margin:0;"><span style="font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:700; color:#e8b84b;">72%</span> <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a; margin-left:4px; text-transform:uppercase; letter-spacing:0.5px;">match médio</span></p>
+              </td></tr>
+            </table>
+          </td>
+          <td class="stack-column" width="48%" valign="top" style="padding:0 0 0 12px;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border:1px solid #2a2a38; border-radius:12px;">
+              <tr><td class="card-pad" style="padding:24px; background-color:#16161f; border-radius:12px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+                  <td width="48" height="48" style="width:48px;height:48px;background:#1e1e24;border-radius:10px;text-align:center;vertical-align:middle;">
+                    <span style="font-size:22px;line-height:48px;display:block;">⚙️</span>
+                  </td>
+                </tr></table>
+                <p style="margin:16px 0 6px; font-family:Georgia,'Times New Roman',serif; font-size:17px; font-weight:700; color:#ffffff;">Imperativo</p>
+                <p style="margin:0 0 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; line-height:1.6; color:#7a7a8a;">Controle total, passo a passo. C, Go, Bash. Você decide cada instrução.</p>
+                <p style="margin:0;"><span style="font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:700; color:#7a7a8a;">45%</span> <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a; margin-left:4px; text-transform:uppercase; letter-spacing:0.5px;">match médio</span></p>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- QUOTE -->
+  <tr>
+    <td style="padding:40px 40px 0; background-color:#0f0f12;" class="section-pad">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border-left:3px solid #8B7FE8; background-color:#16161f; border-radius:0 12px 12px 0;">
+        <tr>
+          <td style="padding:24px 28px;">
+            <p style="margin:0 0 12px; font-family:Georgia,'Times New Roman',serif; font-size:19px; font-weight:700; line-height:1.4; color:#ffffff; font-style:italic;">
+              "O paradigma certo não torna a programação mais fácil — torna ela mais <span style="color:#8B7FE8;">sua</span>."
+            </p>
+            <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:12px; color:#5a5a6a; text-transform:uppercase; letter-spacing:1px;">— Time Paradigma</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- COMPARISON TABLE -->
+  <tr>
+    <td style="padding:40px 40px 0; background-color:#0f0f12;" class="section-pad">
+      <p style="margin:0 0 6px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5a5a6a;">Comparação</p>
+      <p style="margin:0 0 20px; font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:700; color:#ffffff;">O que cada paradigma resolve melhor</p>
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border-collapse:collapse; border-radius:12px; overflow:hidden; border:1px solid #2a2a38;">
+        <tr style="background-color:#1a1a28;">
+          <td style="padding:12px 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; color:#5a5a6a; text-transform:uppercase; letter-spacing:1px; width:34%;">Critério</td>
+          <td style="padding:12px 10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; color:#8B7FE8; text-transform:uppercase; letter-spacing:1px; width:22%; text-align:center;">Declarativo</td>
+          <td style="padding:12px 10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; color:#4ecb8d; text-transform:uppercase; letter-spacing:1px; width:22%; text-align:center;">OOP</td>
+          <td style="padding:12px 10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; color:#e8b84b; text-transform:uppercase; letter-spacing:1px; width:22%; text-align:center;">Funcional</td>
+        </tr>
+        <tr style="background-color:#16161f; border-top:1px solid #2a2a38;">
+          <td style="padding:14px 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; color:#9898aa;">Legibilidade</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐⭐</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐</td>
+        </tr>
+        <tr style="background-color:#0f0f12; border-top:1px solid #2a2a38;">
+          <td style="padding:14px 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; color:#9898aa;">Reutilização</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐⭐</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐⭐</td>
+        </tr>
+        <tr style="background-color:#16161f; border-top:1px solid #2a2a38;">
+          <td style="padding:14px 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; color:#9898aa;">Curva de entrada</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">🟢 Fácil</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">🟡 Médio</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">🔴 Difícil</td>
+        </tr>
+        <tr style="background-color:#0f0f12; border-top:1px solid #2a2a38;">
+          <td style="padding:14px 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; color:#9898aa;">Performance</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐⭐</td>
+        </tr>
+        <tr style="background-color:#16161f; border-top:1px solid #2a2a38;">
+          <td style="padding:14px 16px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:13px; color:#9898aa;">Testabilidade</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐</td>
+          <td style="padding:14px 10px; text-align:center; font-size:16px;">⭐⭐⭐</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- CTA QUIZ (botão que abre o quiz inline) -->
+  <tr>
+    <td style="padding:40px; background-color:#0f0f12;" class="section-pad">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:linear-gradient(135deg,#1e1a38 0%,#16161f 100%); border-radius:16px; border:1px solid #3a3060;">
+        <tr>
+          <td style="padding:40px 36px; text-align:center;">
+            <p style="margin:0 0 8px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#8B7FE8;">Quiz gratuito</p>
+            <h2 style="margin:0 0 12px; font-family:Georgia,'Times New Roman',serif; font-size:28px; font-weight:700; color:#ffffff; line-height:1.2;">
+              Descubra seu paradigma<br>em 2 minutos
+            </h2>
+            <p style="margin:0 auto 28px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:14px; line-height:1.6; color:#9898aa; max-width:360px;">
+              5 perguntas. Resultado imediato. Perfil completo com linguagens recomendadas e plano de aprendizado.
+            </p>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center">
+              <tr>
+                <td style="border-radius:8px; background:#8B7FE8;">
+                  <a id="quiz-anchor" href="#quiz-section" onclick="startQuiz()" style="display:inline-block; padding:16px 36px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:15px; font-weight:600; color:#ffffff; border-radius:8px; background:#8B7FE8; text-decoration:none;">
+                    Fazer o quiz agora →
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:16px 0 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:12px; color:#5a5a6a;">
+              Sem cadastro · Resultado imediato · 100% gratuito
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- DIVIDER -->
+  <tr>
+    <td style="padding:0 40px; background-color:#0f0f12;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr><td style="height:1px; background-color:#2a2a38;">&nbsp;</td></tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- FOOTER -->
+  <tr>
+    <td style="padding:32px 40px; background-color:#0f0f12;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td style="vertical-align:top;">
+            <p style="margin:0 0 8px; font-family:Georgia,'Times New Roman',serif; font-size:16px; font-weight:700; color:#ffffff; letter-spacing:-0.3px;">paradigma<span style="color:#8B7FE8;">.</span></p>
+            <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:12px; color:#5a5a6a; line-height:1.5;">Newsletter semanal sobre<br>desenvolvimento intencional.</p>
+          </td>
+          <td align="right" style="vertical-align:top;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="right">
+              <tr>
+                <td style="padding:0 0 8px;">
+                  <a href="#" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:12px; color:#5a5a6a; text-decoration:underline; margin-left:16px;">Descadastrar</a>
+                  <a href="#" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:12px; color:#5a5a6a; text-decoration:underline; margin-left:16px;">Ver no browser</a>
+                  <a href="#" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:12px; color:#5a5a6a; text-decoration:underline; margin-left:16px;">Preferências</a>
+                </td>
+              </tr>
+              <tr>
+                <td align="right" style="padding:4px 0 0;">
+                  <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#3a3a4a;">© 2026 Paradigma · Rua do Código, 42 · São Paulo, SP</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+</table>
+</td></tr>
+</table>
+</div><!-- /#email-section -->
+
+
+<!-- ═══════════════════════════════════════════
+     QUIZ
+     ═══════════════════════════════════════════ -->
+<div id="quiz-section">
+  <div class="quiz-wrap">
+
+    <!-- Quiz header -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:600px; margin:0 auto;">
+      <tr>
+        <td style="padding:32px 40px 0;">
+          <span style="font-family:Georgia,'Times New Roman',serif; font-size:20px; font-weight:700; letter-spacing:-0.5px; color:#ffffff;">paradigma<span style="color:#8B7FE8;">.</span></span>
+          <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:12px; color:#5a5a6a; margin-left:12px;">Quiz de paradigmas</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:20px 40px 0;">
+          <p style="margin:0 0 4px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif; font-size:11px; color:#5a5a6a;" id="q-step-text">Pergunta 1 de 5</p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Progress bar -->
+    <div class="q-progress-bar" style="margin-top:10px;">
+      <div class="q-progress-fill" id="q-progress" style="width:20%;"></div>
+    </div>
+
+    <!-- ── Q1 ── -->
+    <div class="q-card active" id="q1">
+      <p class="q-eyebrow">Estilo de raciocínio</p>
+      <h2 class="q-title">Como você prefere resolver um problema complexo?</h2>
+      <div class="q-options">
+        <div class="q-opt" onclick="selectOpt(this,'q1','declarativo')" data-val="declarativo">
+          <span class="opt-key">A</span>
+          Descrevo o resultado que quero e deixo o sistema descobrir o caminho
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q1','oop')" data-val="oop">
+          <span class="opt-key">B</span>
+          Identifico as "coisas" envolvidas e como elas se relacionam entre si
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q1','funcional')" data-val="funcional">
+          <span class="opt-key">C</span>
+          Penso numa sequência de transformações que os dados vão passar
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q1','imperativo')" data-val="imperativo">
+          <span class="opt-key">D</span>
+          Descrevo cada passo manualmente, eu quero controle total
+        </div>
+      </div>
+      <div class="q-nav">
+        <button class="q-btn-back" style="visibility:hidden;">← Voltar</button>
+        <span class="q-step-label">1 / 5</span>
+        <button class="q-btn-next" id="next-q1" onclick="goNext(1)">Próxima →</button>
+      </div>
+    </div>
+
+    <!-- ── Q2 ── -->
+    <div class="q-card" id="q2">
+      <p class="q-eyebrow">Satisfação no código</p>
+      <h2 class="q-title">O que mais te dá satisfação ao terminar uma feature?</h2>
+      <div class="q-options">
+        <div class="q-opt" onclick="selectOpt(this,'q2','oop')" data-val="oop">
+          <span class="opt-key">A</span>
+          Ver uma estrutura bem organizada, com classes claras e reutilizáveis
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q2','funcional')" data-val="funcional">
+          <span class="opt-key">B</span>
+          Código elegante, sem variáveis globais e sem efeitos colaterais
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q2','declarativo')" data-val="declarativo">
+          <span class="opt-key">C</span>
+          Ler o código e entender imediatamente o que ele faz, sem comentários
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q2','imperativo')" data-val="imperativo">
+          <span class="opt-key">D</span>
+          Saber exatamente o que acontece em cada linha e ter performance máxima
+        </div>
+      </div>
+      <div class="q-nav">
+        <button class="q-btn-back" onclick="goBack(2)">← Voltar</button>
+        <span class="q-step-label">2 / 5</span>
+        <button class="q-btn-next" id="next-q2" onclick="goNext(2)">Próxima →</button>
+      </div>
+    </div>
+
+    <!-- ── Q3 ── -->
+    <div class="q-card" id="q3">
+      <p class="q-eyebrow">Contexto de trabalho</p>
+      <h2 class="q-title">Em que tipo de projeto você se sentiria mais em casa?</h2>
+      <div class="q-options">
+        <div class="q-opt" onclick="selectOpt(this,'q3','declarativo')" data-val="declarativo">
+          <span class="opt-key">A</span>
+          Aplicação web com muitas queries e configurações declarativas (ex: React, SQL)
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q3','oop')" data-val="oop">
+          <span class="opt-key">B</span>
+          Sistema de médio/grande porte com equipe, onde organização é crítica
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q3','funcional')" data-val="funcional">
+          <span class="opt-key">C</span>
+          Pipeline de dados, sistema distribuído ou backend com muita concorrência
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q3','imperativo')" data-val="imperativo">
+          <span class="opt-key">D</span>
+          Firmware, sistemas embarcados, ferramentas de linha de comando ou drivers
+        </div>
+      </div>
+      <div class="q-nav">
+        <button class="q-btn-back" onclick="goBack(3)">← Voltar</button>
+        <span class="q-step-label">3 / 5</span>
+        <button class="q-btn-next" id="next-q3" onclick="goNext(3)">Próxima →</button>
+      </div>
+    </div>
+
+    <!-- ── Q4 ── -->
+    <div class="q-card" id="q4">
+      <p class="q-eyebrow">Relação com bugs</p>
+      <h2 class="q-title">Qual tipo de bug te incomoda mais resolver?</h2>
+      <div class="q-options">
+        <div class="q-opt" onclick="selectOpt(this,'q4','imperativo')" data-val="imperativo">
+          <span class="opt-key">A</span>
+          Bug de lógica difuso, espalhado por muitas funções sem rastreabilidade clara
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q4','oop')" data-val="oop">
+          <span class="opt-key">B</span>
+          Estado inconsistente entre objetos que se comunicam de formas inesperadas
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q4','funcional')" data-val="funcional">
+          <span class="opt-key">C</span>
+          Efeito colateral oculto que muda dados que outra parte do sistema dependia
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q4','declarativo')" data-val="declarativo">
+          <span class="opt-key">D</span>
+          Configuração ou query mal formada que quebra silenciosamente em produção
+        </div>
+      </div>
+      <div class="q-nav">
+        <button class="q-btn-back" onclick="goBack(4)">← Voltar</button>
+        <span class="q-step-label">4 / 5</span>
+        <button class="q-btn-next" id="next-q4" onclick="goNext(4)">Próxima →</button>
+      </div>
+    </div>
+
+    <!-- ── Q5 ── -->
+    <div class="q-card" id="q5">
+      <p class="q-eyebrow">Filosofia de código</p>
+      <h2 class="q-title">Qual frase ressoa mais com sua forma de ver programação?</h2>
+      <div class="q-options">
+        <div class="q-opt" onclick="selectOpt(this,'q5','declarativo')" data-val="declarativo">
+          <span class="opt-key">A</span>
+          "Código bom é código que você quase não precisa ler — ele se explica sozinho."
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q5','oop')" data-val="oop">
+          <span class="opt-key">B</span>
+          "Software é modelagem do mundo real. Entidade clara, responsabilidade clara."
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q5','funcional')" data-val="funcional">
+          <span class="opt-key">C</span>
+          "Dado entra, dado sai. Sem surpresas. Sem estado compartilhado."
+        </div>
+        <div class="q-opt" onclick="selectOpt(this,'q5','imperativo')" data-val="imperativo">
+          <span class="opt-key">D</span>
+          "Quero saber exatamente o que o computador está fazendo a cada ciclo."
+        </div>
+      </div>
+      <div class="q-nav">
+        <button class="q-btn-back" onclick="goBack(5)">← Voltar</button>
+        <span class="q-step-label">5 / 5</span>
+        <button class="q-btn-next" id="next-q5" onclick="showResult()">Ver resultado →</button>
+      </div>
+    </div>
+
+    <!-- ── RESULT ── -->
+    <div id="quiz-result" style="padding:0 40px;">
+      <div class="result-hero">
+        <span class="result-badge" id="res-badge">SEU PARADIGMA</span>
+        <h2 class="result-title" id="res-title">–</h2>
+        <p class="result-sub" id="res-desc">–</p>
+        <div class="result-traits" id="res-traits"></div>
+        <div class="result-bars" id="res-bars"></div>
+        <div class="result-langs" id="res-langs"></div>
+        <button class="result-cta" onclick="restartQuiz()">Refazer o quiz ↺</button>
+      </div>
+    </div>
+
+  </div><!-- /.quiz-wrap -->
+</div><!-- /#quiz-section -->
+
+
+<script>
+  // ─── State ───
+  const answers = {};
+  const totalQ = 5;
+
+  // ─── Score maps: cada resposta adiciona pontos ao paradigma correspondente
+  // answers[qN] = 'declarativo' | 'oop' | 'funcional' | 'imperativo'
+
+  function selectOpt(el, qId, val) {
+    // Deselect others in same question
+    el.closest('.q-options').querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[qId] = val;
+    // Enable next button
+    const btn = document.getElementById('next-' + qId);
+    if (btn) btn.classList.add('ready');
+  }
+
+  function goNext(current) {
+    if (!answers['q' + current]) return;
+    const cur = document.getElementById('q' + current);
+    const nxt = document.getElementById('q' + (current + 1));
+    cur.classList.remove('active');
+    nxt.classList.add('active');
+    const step = current + 1;
+    document.getElementById('q-step-text').textContent = 'Pergunta ' + step + ' de ' + totalQ;
+    document.getElementById('q-progress').style.width = (step / totalQ * 100) + '%';
+    window.scrollTo({ top: document.getElementById('quiz-section').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  function goBack(current) {
+    const cur = document.getElementById('q' + current);
+    const prev = document.getElementById('q' + (current - 1));
+    cur.classList.remove('active');
+    prev.classList.add('active');
+    const step = current - 1;
+    document.getElementById('q-step-text').textContent = 'Pergunta ' + step + ' de ' + totalQ;
+    document.getElementById('q-progress').style.width = (step / totalQ * 100) + '%';
+    window.scrollTo({ top: document.getElementById('quiz-section').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  // ─── Results data ───
+  const paradigmas = {
+    declarativo: {
+      title: 'Declarativo',
+      emoji: '🎯',
+      badge: '🎯 PARADIGMA DECLARATIVO',
+      desc: 'Você pensa em intenções, não em instruções. Seu código descreve o que deve acontecer e deixa o sistema resolver o como — o que torna tudo mais legível, conciso e fácil de manter.',
+      traits: ['Abstração', 'Legibilidade', 'Intenção clara', 'Produtividade'],
+      langs: [
+        { name: 'SQL', bg: '#FAECE7', color: '#712B13' },
+        { name: 'HTML/CSS', bg: '#E6F1FB', color: '#185FA5' },
+        { name: 'Python', bg: '#E1F5EE', color: '#0F6E56' },
+        { name: 'TypeScript', bg: '#EEEDFE', color: '#3C3489' },
+        { name: 'GraphQL', bg: '#FDE7F3', color: '#7B1250' },
+      ],
+      scores: { declarativo: 95, oop: 70, funcional: 65, imperativo: 30 }
+    },
+    oop: {
+      title: 'Orientado a Objetos',
+      emoji: '🧩',
+      badge: '🧩 PARADIGMA OOP',
+      desc: 'Você enxerga sistemas como entidades que colaboram. Herança, encapsulamento e polimorfismo são ferramentas naturais para você — e sua arquitetura tende a refletir o mundo real.',
+      traits: ['Modelagem', 'Reutilização', 'Encapsulamento', 'Escalabilidade'],
+      langs: [
+        { name: 'Python', bg: '#E1F5EE', color: '#0F6E56' },
+        { name: 'Kotlin', bg: '#E6F1FB', color: '#185FA5' },
+        { name: 'Java', bg: '#FAECE7', color: '#712B13' },
+        { name: 'C#', bg: '#EEEDFE', color: '#3C3489' },
+        { name: 'Swift', bg: '#FEF3E2', color: '#7A4A00' },
+      ],
+      scores: { oop: 92, declarativo: 70, funcional: 55, imperativo: 40 }
+    },
+    funcional: {
+      title: 'Funcional',
+      emoji: '🔄',
+      badge: '🔄 PARADIGMA FUNCIONAL',
+      desc: 'Você é atraído pela pureza e previsibilidade. Funções sem efeitos colaterais, imutabilidade e composição fazem sentido intuitivo para você — e testes ficam muito mais simples.',
+      traits: ['Pureza', 'Composição', 'Imutabilidade', 'Testabilidade'],
+      langs: [
+        { name: 'Elixir', bg: '#EEEDFE', color: '#3C3489' },
+        { name: 'Haskell', bg: '#E6F1FB', color: '#185FA5' },
+        { name: 'F#', bg: '#E1F5EE', color: '#0F6E56' },
+        { name: 'Clojure', bg: '#FEF3E2', color: '#7A4A00' },
+        { name: 'Scala', bg: '#FAECE7', color: '#712B13' },
+      ],
+      scores: { funcional: 90, declarativo: 65, oop: 50, imperativo: 35 }
+    },
+    imperativo: {
+      title: 'Imperativo / Procedural',
+      emoji: '⚙️',
+      badge: '⚙️ PARADIGMA IMPERATIVO',
+      desc: 'Você quer controle absoluto. Cada instrução, cada alocação, cada ciclo de CPU — tudo sob seu comando. Você não delega para abstrações: você sabe o que está acontecendo.',
+      traits: ['Controle', 'Performance', 'Precisão', 'Proximidade do hardware'],
+      langs: [
+        { name: 'C', bg: '#E6F1FB', color: '#185FA5' },
+        { name: 'Go', bg: '#E1F5EE', color: '#0F6E56' },
+        { name: 'Rust', bg: '#FAECE7', color: '#712B13' },
+        { name: 'C++', bg: '#EEEDFE', color: '#3C3489' },
+        { name: 'Bash', bg: '#FEF3E2', color: '#7A4A00' },
+      ],
+      scores: { imperativo: 90, funcional: 55, oop: 45, declarativo: 40 }
+    }
+  };
+
+  function computeResult() {
+    const tally = { declarativo: 0, oop: 0, funcional: 0, imperativo: 0 };
+    Object.values(answers).forEach(v => { if (tally[v] !== undefined) tally[v]++; });
+    return Object.entries(tally).sort((a, b) => b[1] - a[1])[0][0];
+  }
+
+  function showResult() {
+    if (!answers['q5']) return;
+    document.getElementById('q5').classList.remove('active');
+
+    const winner = computeResult();
+    const data = paradigmas[winner];
+
+    document.getElementById('res-badge').textContent = data.badge;
+    document.getElementById('res-title').textContent = data.emoji + ' ' + data.title;
+    document.getElementById('res-desc').textContent = data.desc;
+
+    // Traits
+    const traitsEl = document.getElementById('res-traits');
+    traitsEl.innerHTML = data.traits.map(t => `<span class="trait-tag">${t}</span>`).join('');
+
+    // Bars
+    const barsEl = document.getElementById('res-bars');
+    const barColors = { declarativo: '#8B7FE8', oop: '#4ecb8d', funcional: '#e8b84b', imperativo: '#7a7a8a' };
+    const barLabels = { declarativo: 'Declarativo', oop: 'Orientado a objetos', funcional: 'Funcional', imperativo: 'Imperativo' };
+    barsEl.innerHTML = Object.entries(data.scores)
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `
+        <div class="bar-row">
+          <div class="bar-label">
+            <span class="bar-name">${barLabels[k]}</span>
+            <span class="bar-pct" style="color:${barColors[k]}">${v}%</span>
+          </div>
+          <div class="bar-bg"><div class="bar-fill" style="width:0%; background:${barColors[k]};" data-target="${v}"></div></div>
+        </div>`).join('');
+
+    // Langs
+    const langsEl = document.getElementById('res-langs');
+    langsEl.innerHTML = data.langs.map(l => `<span class="lang-pill" style="background:${l.bg};color:${l.color};">${l.name}</span>`).join('');
+
+    const result = document.getElementById('quiz-result');
+    result.classList.add('show');
+    document.getElementById('q-step-text').textContent = 'Resultado';
+    document.getElementById('q-progress').style.width = '100%';
+
+    // Animate bars
+    setTimeout(() => {
+      document.querySelectorAll('.bar-fill').forEach(b => {
+        b.style.width = b.dataset.target + '%';
+      });
+    }, 100);
+
+    window.scrollTo({ top: document.getElementById('quiz-section').offsetTop - 20, behavior: 'smooth' });
+  }
+
+  function startQuiz() {
+    document.getElementById('quiz-section').classList.add('active');
+    setTimeout(() => {
+      document.getElementById('quiz-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+    return false;
+  }
+
+  function restartQuiz() {
+    // Reset answers
+    for (let k in answers) delete answers[k];
+    // Reset UI
+    document.querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+    document.querySelectorAll('.q-btn-next').forEach(b => b.classList.remove('ready'));
+    document.querySelectorAll('.q-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('q1').classList.add('active');
+    document.getElementById('quiz-result').classList.remove('show');
+    document.getElementById('q-step-text').textContent = 'Pergunta 1 de 5';
+    document.getElementById('q-progress').style.width = '20%';
+    window.scrollTo({ top: document.getElementById('quiz-section').offsetTop - 20, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
